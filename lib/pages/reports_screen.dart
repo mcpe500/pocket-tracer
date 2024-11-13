@@ -291,52 +291,84 @@ class _ReportsScreenState extends State<ReportsScreen> {
       return PieChartSectionData(
         value: entry.value,
         title: '$percentage%',
-        radius: 100,
+        radius: 120, // Increased radius
         titleStyle: const TextStyle(
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          shadows: [
+            Shadow(
+              color: Colors.black26,
+              blurRadius: 2,
+            ),
+          ],
         ),
+        showTitle: entry.value / totalExpenses > 0.05,
       );
     }).toList();
 
     return Card(
       margin: const EdgeInsets.all(16),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 24), // Increased vertical padding
         child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // Align items to the start
           children: [
             Text(
               'Expense Distribution',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
+            const SizedBox(height: 24), // Increased spacing
+            Container(
+              height: 300, // Increased height
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16), // Added padding
               child: sections.isEmpty
                   ? const Center(child: Text('No expenses in this period'))
                   : PieChart(
                       PieChartData(
                         sections: sections,
                         sectionsSpace: 2,
-                        centerSpaceRadius: 40,
+                        centerSpaceRadius: 60, // Increased center space
+                        pieTouchData: PieTouchData(
+                          enabled: true,
+                          touchCallback: (event, response) {
+                            // Add touch interaction if needed
+                          },
+                        ),
                       ),
                     ),
             ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: categoryExpenses.entries.map((entry) {
-                final percentage =
-                    (entry.value / totalExpenses * 100).toStringAsFixed(1);
-                return Chip(
-                  label: Text(
-                    '${entry.key}: $percentage%',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                );
-              }).toList(),
+            const SizedBox(height: 24), // Increased spacing
+            const Text(
+              'Categories',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Wrap(
+                spacing: 12, // Increased spacing
+                runSpacing: 12, // Increased run spacing
+                children: categoryExpenses.entries.map((entry) {
+                  final percentage =
+                      (entry.value / totalExpenses * 100).toStringAsFixed(1);
+                  return Chip(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8), // Added padding
+                    label: Text(
+                      '${entry.key}: $percentage%',
+                      style: const TextStyle(
+                          fontSize: 13), // Slightly increased font size
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ],
         ),
